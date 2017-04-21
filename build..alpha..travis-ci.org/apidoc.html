@@ -1,0 +1,276 @@
+<div class="apidocDiv">
+<style>
+/*csslint
+*/
+.apidocDiv {
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.apidocDiv a[href] {
+    color: #33f;
+    font-weight: bold;
+    text-decoration: none;
+}
+.apidocDiv a[href]:hover {
+    text-decoration: underline;
+}
+.apidocCodeCommentSpan {
+    background: #bbf;
+    color: #000;
+    display: block;
+}
+.apidocCodeKeywordSpan {
+    color: #d00;
+    font-weight: bold;
+}
+.apidocCodePre {
+    background: #eef;
+    border: 1px solid;
+    color: #777;
+    padding: 5px;
+    white-space: pre-wrap;
+}
+.apidocFooterDiv {
+    margin-top: 20px;
+    text-align: center;
+}
+.apidocModuleLi {
+    margin-top: 10px;
+}
+.apidocSectionDiv {
+    border-top: 1px solid;
+    margin-top: 20px;
+}
+.apidocSignatureSpan {
+    color: #777;
+    font-weight: bold;
+}
+</style>
+<h1>api documentation for
+    <a
+
+        href="https://github.com/angular/preboot"
+
+    >preboot (v4.5.2)</a>
+</h1>
+<h4>Record and play back browser events</h4>
+<div class="apidocSectionDiv"><a
+    href="#apidoc.tableOfContents"
+    id="apidoc.tableOfContents"
+><h1>table of contents</h1></a><ol>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.preboot">module preboot</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.preboot.assign">
+            function <span class="apidocSignatureSpan">preboot.</span>assign
+            <span class="apidocSignatureSpan">(target)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.preboot.getBrowserCode">
+            function <span class="apidocSignatureSpan">preboot.</span>getBrowserCode
+            <span class="apidocSignatureSpan">(legacyOptions)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.preboot.getInlineCode">
+            function <span class="apidocSignatureSpan">preboot.</span>getInlineCode
+            <span class="apidocSignatureSpan">(customOptions)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.preboot.stringifyWithFunctions">
+            function <span class="apidocSignatureSpan">preboot.</span>stringifyWithFunctions
+            <span class="apidocSignatureSpan">(obj)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <span class="apidocSignatureSpan">object <span class="apidocSignatureSpan">preboot.</span>defaultOptions</span>
+
+        </li>
+
+    </ol></li>
+
+</ol></div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.preboot" id="apidoc.module.preboot">module preboot</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.preboot.assign" id="apidoc.element.preboot.assign">
+        function <span class="apidocSignatureSpan">preboot.</span>assign
+        <span class="apidocSignatureSpan">(target)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function assign(target) {
+    var optionSets = [];
+    for (var _i = 1; _i &#x3c; arguments.length; _i++) {
+        optionSets[_i - 1] = arguments[_i];
+    }
+    if (target === undefined || target === null) {
+        throw new TypeError(&#x27;Cannot convert undefined or null to object&#x27;);
+    }
+    var output = Object(target);
+    for (var index = 0; index &#x3c; optionSets.length; index++) {
+        var source = optionSets[index];
+        if (source !== undefined &#x26;&#x26; source !== null) {
+            for (var nextKey in source) {
+                if (source.hasOwnProperty(nextKey)) {
+                    output[nextKey] = source[nextKey];
+                }
+            }
+        }
+    }
+    return output;
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.preboot.getBrowserCode" id="apidoc.element.preboot.getBrowserCode">
+        function <span class="apidocSignatureSpan">preboot.</span>getBrowserCode
+        <span class="apidocSignatureSpan">(legacyOptions)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function getBrowserCode(legacyOptions) {
+    legacyOptions = legacyOptions || {};
+    // we will remove this function with the next version
+    console.warn(&#x27;getBrowserCode() deprecated and many custom options no longer available. &#x27; +
+        &#x27;Please switch to getInlineCode().&#x27;);
+    var inlineCode = getInlineCode({
+        appRoot: legacyOptions.appRoot || &#x27;app&#x27;,
+        uglify: legacyOptions.uglify,
+        buffer: legacyOptions.buffer,
+        noInlineCache: legacyOptions.noInlineCache,
+        eventSelectors: legacyOptions.eventSelectors,
+        serverClientRoot: legacyOptions.serverClientRoot
+    });
+    // two different possibilities depending on how client is calling preboot_node
+    var minCodePath = path.normalize(__dirname + &#x27;/../../../__dist/preboot_browser.min.js&#x27;);
+    var browserCode = (legacyOptions.uglify &#x26;&#x26; fs.existsSync(minCodePath)) ?
+        fs.readFileSync(minCodePath).toString() :
+        (preboot_browser_1.prebootClient.toString() + &#x27;\nvar preboot = prebootClient();&#x27;);
+    var deprecatedCode = inlineCode + &#x27;\n&#x27; + browserCode;
+    return Promise.resolve(deprecatedCode);
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.preboot.getInlineCode" id="apidoc.element.preboot.getInlineCode">
+        function <span class="apidocSignatureSpan">preboot.</span>getInlineCode
+        <span class="apidocSignatureSpan">(customOptions)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function getInlineCode(customOptions) {
+    var opts = assign({}, exports.defaultOptions, customOptions);
+    // safety check to make sure options passed in are valid
+    validateOptions(opts);
+    // as long as we inline code caching isn&#x27;t disabled and exists in cache, use the cache
+    var optsKey = JSON.stringify(opts);
+    if (!opts.noInlineCache &#x26;&#x26; inlineCodeCache[optsKey]) {
+        return inlineCodeCache[optsKey];
+    }
+    // two different possibilities depending on how client is calling preboot_node
+    var minCodePath = path.normalize(__dirname + &#x27;/../../../__dist/preboot_inline.min.js&#x27;);
+    var inlineCode = (opts.uglify &#x26;&#x26; fs.existsSync(minCodePath)) ?
+        fs.readFileSync(minCodePath).toString() :
+        preboot_inline_1.prebootstrap.toString();
+    // generate the inline JavaScript from prebootstrap
+    inlineCode += &#x27;\n &#x27; + &#x27;prebootstrap().init(&#x27; + stringifyWithFunctions(opts) + &#x27;);&#x27;;
+    // cache results as long as caching not disabled
+    if (!opts.noInlineCache) {
+        inlineCodeCache[optsKey] = inlineCode;
+    }
+    return inlineCode;
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+```
+
+Then in your server-side code you would do something like this:
+
+```es6
+var preboot = require(&#x27;preboot&#x27;);
+var prebootOptions = {};  // see options section below
+var inlinePrebootCode = preboot.<span class="apidocCodeKeywordSpan">getInlineCode</span>(opts);
+```
+
+You then inject `inlinePrebootCode` into the HEAD section of your server-side template.
+Then, at the very bottom of your `body` tag in your server-side template, add a reference
+to the preboot client and have some way of calling `preboot.complete()`:
+
+```html
+...</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.preboot.stringifyWithFunctions" id="apidoc.element.preboot.stringifyWithFunctions">
+        function <span class="apidocSignatureSpan">preboot.</span>stringifyWithFunctions
+        <span class="apidocSignatureSpan">(obj)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function stringifyWithFunctions(obj) {
+    var FUNC_START = &#x27;START_FUNCTION_HERE&#x27;;
+    var FUNC_STOP = &#x27;STOP_FUNCTION_HERE&#x27;;
+    // first stringify except mark off functions with markers
+    var str = JSON.stringify(obj, function (key, value) {
+        // if the value is a function, we want to wrap it with markers
+        if (!!(value &#x26;&#x26; value.constructor &#x26;&#x26; value.call &#x26;&#x26; value.apply)) {
+            return FUNC_START + value.toString() + FUNC_STOP;
+        }
+        else {
+            return value;
+        }
+    });
+    // now we use the markers to replace function strings with actual functions
+    var startFuncIdx = str.indexOf(FUNC_START);
+    var stopFuncIdx, fn;
+    while (startFuncIdx &#x3e;= 0) {
+        stopFuncIdx = str.indexOf(FUNC_STOP);
+        // pull string out
+        fn = str.substring(startFuncIdx + FUNC_START.length, stopFuncIdx);
+        fn = fn.replace(/\\n/g, &#x27;\n&#x27;);
+        str = str.substring(0, startFuncIdx - 1) + fn + str.substring(stopFuncIdx + FUNC_STOP.length + 1);
+        startFuncIdx = str.indexOf(FUNC_START);
+    }
+    return str;
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+
+</div>
+
+<div class="apidocFooterDiv">
+    [ this document was created with
+    <a href="https://github.com/kaizhu256/node-utility2" target="_blank">utility2</a>
+    ]
+</div>
+</div>
